@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Activity, Lock, User, Stethoscope, Shield, UserCog, FileText, Bell, BarChart3, CheckCircle, AlertCircle, Clock, LogOut, History, Building2, Mail, MessageCircle, Download, Eye, AlertTriangle } from 'lucide-react';
+import { Activity, Lock, User, Stethoscope, Shield, UserCog, FileText, Bell, BarChart3, CheckCircle, AlertCircle, Clock, LogOut, History, Building2, Mail, MessageCircle, Download, Eye } from 'lucide-react';
 
 const HealthcareLogin = () => {
   const [userType, setUserType] = useState('admin');
@@ -15,11 +15,68 @@ const HealthcareLogin = () => {
     superadmin: { username: 'superadmin', password: 'super123' }
   };
 
+ 
   const clinics = [
-    { id: 'clinic_a', name: 'Apollo Health Clinic - Chennai' },
-    { id: 'clinic_b', name: 'Apollo Health Clinic - Bangalore' },
-    { id: 'clinic_c', name: 'Apollo Health Clinic - Hyderabad' }
+    {
+      id: 'clinic_a',
+      name: 'Apollo Health Clinic - Chennai',
+      riskLevel: 'medium',
+      form2Status: 'Pending',
+      form2DaysUntilExpiry: 25,
+      bmwDaysUntilExpiry: 25
+    },
+    {
+      id: 'clinic_b',
+      name: 'Apollo Health Clinic - Bangalore',
+      riskLevel: 'low',
+      form2Status: 'Uploaded',
+      form2DaysUntilExpiry: 60,
+      bmwDaysUntilExpiry: 60
+    },
+    {
+      id: 'clinic_c',
+      name: 'Apollo Health Clinic - Hyderabad',
+      riskLevel: 'high',
+      form2Status: 'Pending',
+      form2DaysUntilExpiry: 15,
+      bmwDaysUntilExpiry: 15
+    }
   ];
+
+  const getBMWExpiryInfo = (clinic) => {
+    if (!clinic) return { days: '-', color: 'text-gray-400', message: '' };
+
+    // 🔴 High Risk
+    if (
+      clinic.form2Status === 'Pending' &&
+      clinic.form2DaysUntilExpiry < 30
+    ) {
+      return {
+        days: clinic.form2DaysUntilExpiry,
+        color: 'text-red-400',
+        message: 'High Risk – Immediate action required'
+      };
+    }
+
+    // 🟡 Medium
+    if (clinic.form2DaysUntilExpiry <= 45) {
+      return {
+        days: clinic.form2DaysUntilExpiry,
+        color: 'text-yellow-400',
+        message: 'Renewal required soon'
+      };
+    }
+
+    // 🟢 Low
+    return {
+      days: clinic.form2DaysUntilExpiry,
+      color: 'text-green-400',
+      message: 'All good'
+    };
+  };
+
+
+
 
   const complianceHistory = [
     { date: '15-Nov-2024', action: 'BMW Authorization Renewed', status: 'success', details: 'TN/BMW/2024/001 extended to 31-Dec-2025' },
@@ -37,42 +94,6 @@ const HealthcareLogin = () => {
     { id: 4, type: 'whatsapp', title: 'Annual Report Due', message: 'WhatsApp reminder for annual report submission', time: '2 days ago', status: 'sent' },
     { id: 5, type: 'email', title: 'Compliance Summary', message: 'Monthly compliance status report sent', time: '3 days ago', status: 'sent' }
   ];
-
-  // Documents with status and dates
-  const documents = [
-    { name: 'BMW Authorization', status: 'Uploaded', date: '01-Jan-2022', expiry: '31-Dec-2024', daysLeft: 13 },
-    { name: 'Form II', status: 'Pending', date: '-', expiry: 'Due: 30-Dec-2024', daysLeft: 12 },
-    { name: 'Annual Report', status: 'Uploaded', date: '15-Jan-2024', expiry: '15-Jan-2025', daysLeft: 28 },
-    { name: 'Vendor Agreement', status: 'Uploaded', date: '10-Feb-2024', expiry: '-', daysLeft: null },
-    { name: 'Compliance Certificate', status: 'Pending', date: '-', expiry: '-', daysLeft: null },
-    { name: 'TNPCB License', status: 'Uploaded', date: '05-Mar-2023', expiry: '05-Mar-2025', daysLeft: 78 }
-  ];
-
-  // Calculate Risk Level based on intelligent logic
-  const calculateRiskLevel = () => {
-    const form2 = documents.find(d => d.name === 'Form II');
-    const bmwAuth = documents.find(d => d.name === 'BMW Authorization');
-    
-    // High Risk: Form II pending + expiry < 30 days
-    if (form2?.status === 'Pending' && form2?.daysLeft && form2.daysLeft < 30) {
-      return { level: 'High', color: 'red', icon: '🔴', details: 'Form II pending with critical deadline' };
-    }
-    
-    // High Risk: BMW expiring in < 15 days
-    if (bmwAuth?.daysLeft && bmwAuth.daysLeft < 15) {
-      return { level: 'High', color: 'red', icon: '🔴', details: 'BMW Authorization expiring critically soon' };
-    }
-    
-    // Medium Risk: Form II pending OR BMW expiring in < 30 days
-    if (form2?.status === 'Pending' || (bmwAuth?.daysLeft && bmwAuth.daysLeft < 30)) {
-      return { level: 'Medium', color: 'yellow', icon: '🟡', details: 'Action required for pending documents' };
-    }
-    
-    // Low Risk: All documents in order
-    return { level: 'Low', color: 'green', icon: '🟢', details: 'All compliance documents are in order' };
-  };
-
-  const riskIndicator = calculateRiskLevel();
 
   const handleLogin = () => {
     setError('');
@@ -105,6 +126,20 @@ const HealthcareLogin = () => {
 
   if (isLoggedIn) {
     const currentClinic = clinics.find(c => c.id === selectedClinic);
+    const bmwInfo = getBMWExpiryInfo(currentClinic);
+
+    // Get risk level colors and text based on clinic
+    const getRiskLevelInfo = () => {
+      if (currentClinic.riskLevel === 'low') {
+        return { level: '🟢 Low', bg: 'bg-green-900', text: 'text-green-400', description: 'All systems compliant' };
+      } else if (currentClinic.riskLevel === 'medium') {
+        return { level: '🟡 Medium', bg: 'bg-yellow-900', text: 'text-yellow-400', description: 'Some attention needed' };
+      } else {
+        return { level: '🔴 High', bg: 'bg-red-900', text: 'text-red-400', description: 'Immediate action required' };
+      }
+    };
+
+    const riskInfo = getRiskLevelInfo();
 
     return (
       <div className="min-h-screen bg-gray-900 text-white">
@@ -149,7 +184,7 @@ const HealthcareLogin = () => {
           {activeTab === 'dashboard' && (
             <div>
               <h2 className="text-3xl font-bold mb-8">Compliance Dashboard</h2>
-              
+
               {/* Status Cards */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                 <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
@@ -161,14 +196,38 @@ const HealthcareLogin = () => {
                   <p className="text-xs text-gray-500 mt-2">All documents compliant</p>
                 </div>
 
-                <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
+                <div className={`${riskInfo.bg} border border-gray-700 rounded-lg p-6`}>
+                  <div className="flex justify-between items-start mb-4">
+                    <h3 className="text-gray-400 text-sm font-medium">Compliance Risk Level</h3>
+                    <AlertCircle className={`w-5 h-5 ${riskInfo.text}`} />
+                  </div>
+                  <p className={`text-3xl font-bold ${riskInfo.text}`}>{riskInfo.level}</p>
+                  <p className="text-xs text-gray-400 mt-2">{riskInfo.description}</p>
+                </div>
+
+                {/* <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
                   <div className="flex justify-between items-start mb-4">
                     <h3 className="text-gray-400 text-sm font-medium">BMW Auth. Expiry</h3>
                     <Clock className="w-5 h-5 text-yellow-500" />
                   </div>
                   <p className="text-3xl font-bold text-yellow-400">45 Days</p>
                   <p className="text-xs text-gray-500 mt-2">Renewal required soon</p>
+                </div> */}
+                <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
+                  <div className="flex justify-between items-start mb-4">
+                    <h3 className="text-gray-400 text-sm font-medium">BMW Auth. Expiry</h3>
+                    <Clock className="w-5 h-5 text-yellow-500" />
+                  </div>
+
+                  <p className={`text-3xl font-bold ${bmwInfo.color}`}>
+                    {bmwInfo.days} Days
+                  </p>
+
+                  <p className="text-xs text-gray-400 mt-2">
+                    {bmwInfo.message}
+                  </p>
                 </div>
+
 
                 <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
                   <div className="flex justify-between items-start mb-4">
@@ -177,24 +236,6 @@ const HealthcareLogin = () => {
                   </div>
                   <p className="text-3xl font-bold text-blue-400">6/8</p>
                   <p className="text-xs text-gray-500 mt-2">2 documents pending</p>
-                </div>
-
-                {/* Risk Indicator Card - NEW */}
-                <div className={`bg-gray-800 border rounded-lg p-6 ${riskIndicator.color === 'red' ? 'border-red-600' : riskIndicator.color === 'yellow' ? 'border-yellow-600' : 'border-green-600'}`}>
-                  <div className="flex justify-between items-start mb-4">
-                    <h3 className="text-gray-400 text-sm font-medium">Compliance Risk</h3>
-                    {riskIndicator.color === 'red' ? (
-                      <AlertTriangle className="w-5 h-5 text-red-500" />
-                    ) : riskIndicator.color === 'yellow' ? (
-                      <AlertCircle className="w-5 h-5 text-yellow-500" />
-                    ) : (
-                      <CheckCircle className="w-5 h-5 text-green-500" />
-                    )}
-                  </div>
-                  <p className={`text-3xl font-bold ${riskIndicator.color === 'red' ? 'text-red-400' : riskIndicator.color === 'yellow' ? 'text-yellow-400' : 'text-green-400'}`}>
-                    {riskIndicator.icon} {riskIndicator.level}
-                  </p>
-                  <p className="text-xs text-gray-500 mt-2">{riskIndicator.details}</p>
                 </div>
               </div>
 
@@ -220,7 +261,7 @@ const HealthcareLogin = () => {
             <div>
               <h2 className="text-3xl font-bold mb-8">Notification Preview</h2>
               <p className="text-gray-400 mb-6">Automation system for email and WhatsApp reminders</p>
-              
+
               <div className="space-y-4">
                 {notifications.map(notif => (
                   <div key={notif.id} className="bg-gray-800 border border-gray-700 rounded-lg p-6">
@@ -252,7 +293,7 @@ const HealthcareLogin = () => {
             <div>
               <h2 className="text-3xl font-bold mb-8">Compliance History & Audit Logs</h2>
               <p className="text-gray-400 mb-6">Complete audit trail for regulatory compliance</p>
-              
+
               <div className="space-y-3">
                 {complianceHistory.map((item, idx) => (
                   <div key={idx} className="bg-gray-800 border border-gray-700 rounded-lg p-4">
@@ -284,7 +325,7 @@ const HealthcareLogin = () => {
           {activeTab === 'bmw' && (
             <div>
               <h2 className="text-3xl font-bold mb-8">BMW Authorization Tracking</h2>
-              
+
               <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 mb-6">
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
                   <div><p className="text-gray-400 text-sm">Authorization Number</p><p className="font-semibold text-lg mt-2">TN/BMW/2024/001</p></div>
@@ -295,7 +336,7 @@ const HealthcareLogin = () => {
                   <div><p className="text-gray-400 text-sm">Last Updated</p><p className="font-semibold text-lg mt-2">15-Nov-2024</p></div>
                 </div>
               </div>
-              
+
               <button className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-medium transition flex items-center gap-2">
                 <FileText className="w-4 h-4" /> Renew Authorization
               </button>
@@ -306,9 +347,16 @@ const HealthcareLogin = () => {
           {activeTab === 'documents' && (
             <div>
               <h2 className="text-3xl font-bold mb-8">Document Management System</h2>
-              
+
               <div className="space-y-3">
-                {documents.map((doc, idx) => (
+                {[
+                  { name: 'BMW Authorization', status: 'Uploaded', date: '01-Jan-2022', expiry: '31-Dec-2024' },
+                  { name: 'Form II', status: 'Pending', date: '-', expiry: 'Due: 30-Dec-2024' },
+                  { name: 'Annual Report', status: 'Uploaded', date: '15-Jan-2024', expiry: '15-Jan-2025' },
+                  { name: 'Vendor Agreement', status: 'Uploaded', date: '10-Feb-2024', expiry: '-' },
+                  { name: 'Compliance Certificate', status: 'Pending', date: '-', expiry: '-' },
+                  { name: 'TNPCB License', status: 'Uploaded', date: '05-Mar-2023', expiry: '05-Mar-2025' }
+                ].map((doc, idx) => (
                   <div key={idx} className="bg-gray-800 border border-gray-700 rounded-lg p-4">
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
@@ -333,7 +381,7 @@ const HealthcareLogin = () => {
           {activeTab === 'profile' && (
             <div>
               <h2 className="text-3xl font-bold mb-8">Clinic / Hospital Profile</h2>
-              
+
               <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 space-y-4">
                 <div><p className="text-gray-400 text-sm">Clinic Name</p><p className="font-semibold text-lg mt-1">Apollo Health Clinic</p></div>
                 <div><p className="text-gray-400 text-sm">Type</p><p className="font-semibold text-lg mt-1">Multi-Specialty Clinic</p></div>
@@ -343,7 +391,7 @@ const HealthcareLogin = () => {
                 <div><p className="text-gray-400 text-sm">Authorization Number</p><p className="font-semibold text-lg mt-1">TN/BMW/2024/001</p></div>
                 <div><p className="text-gray-400 text-sm">Departments</p><p className="font-semibold text-lg mt-1">General Medicine, Surgery, Pediatrics, Cardiology, Orthopedics</p></div>
               </div>
-              
+
               <button className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-medium transition mt-6">Edit Profile</button>
             </div>
           )}
@@ -351,6 +399,9 @@ const HealthcareLogin = () => {
       </div>
     );
   }
+
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 text-white flex items-center justify-center p-4">
