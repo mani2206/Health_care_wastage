@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Activity, Lock, User, Stethoscope, Shield, UserCog, FileText, Bell, BarChart3, CheckCircle, AlertCircle, Clock, LogOut, History, Building2, Mail, MessageCircle, Download, Eye } from 'lucide-react';
+import { Activity, Lock, User, Stethoscope, Shield, UserCog, FileText, Bell, BarChart3, CheckCircle, AlertCircle, Clock, LogOut, History, Building2, Mail, MessageCircle, Download, Eye, AlertTriangle } from 'lucide-react';
 
 const HealthcareLogin = () => {
   const [userType, setUserType] = useState('admin');
@@ -37,6 +37,42 @@ const HealthcareLogin = () => {
     { id: 4, type: 'whatsapp', title: 'Annual Report Due', message: 'WhatsApp reminder for annual report submission', time: '2 days ago', status: 'sent' },
     { id: 5, type: 'email', title: 'Compliance Summary', message: 'Monthly compliance status report sent', time: '3 days ago', status: 'sent' }
   ];
+
+  // Documents with status and dates
+  const documents = [
+    { name: 'BMW Authorization', status: 'Uploaded', date: '01-Jan-2022', expiry: '31-Dec-2024', daysLeft: 13 },
+    { name: 'Form II', status: 'Pending', date: '-', expiry: 'Due: 30-Dec-2024', daysLeft: 12 },
+    { name: 'Annual Report', status: 'Uploaded', date: '15-Jan-2024', expiry: '15-Jan-2025', daysLeft: 28 },
+    { name: 'Vendor Agreement', status: 'Uploaded', date: '10-Feb-2024', expiry: '-', daysLeft: null },
+    { name: 'Compliance Certificate', status: 'Pending', date: '-', expiry: '-', daysLeft: null },
+    { name: 'TNPCB License', status: 'Uploaded', date: '05-Mar-2023', expiry: '05-Mar-2025', daysLeft: 78 }
+  ];
+
+  // Calculate Risk Level based on intelligent logic
+  const calculateRiskLevel = () => {
+    const form2 = documents.find(d => d.name === 'Form II');
+    const bmwAuth = documents.find(d => d.name === 'BMW Authorization');
+    
+    // High Risk: Form II pending + expiry < 30 days
+    if (form2?.status === 'Pending' && form2?.daysLeft && form2.daysLeft < 30) {
+      return { level: 'High', color: 'red', icon: '🔴', details: 'Form II pending with critical deadline' };
+    }
+    
+    // High Risk: BMW expiring in < 15 days
+    if (bmwAuth?.daysLeft && bmwAuth.daysLeft < 15) {
+      return { level: 'High', color: 'red', icon: '🔴', details: 'BMW Authorization expiring critically soon' };
+    }
+    
+    // Medium Risk: Form II pending OR BMW expiring in < 30 days
+    if (form2?.status === 'Pending' || (bmwAuth?.daysLeft && bmwAuth.daysLeft < 30)) {
+      return { level: 'Medium', color: 'yellow', icon: '🟡', details: 'Action required for pending documents' };
+    }
+    
+    // Low Risk: All documents in order
+    return { level: 'Low', color: 'green', icon: '🟢', details: 'All compliance documents are in order' };
+  };
+
+  const riskIndicator = calculateRiskLevel();
 
   const handleLogin = () => {
     setError('');
@@ -115,7 +151,7 @@ const HealthcareLogin = () => {
               <h2 className="text-3xl font-bold mb-8">Compliance Dashboard</h2>
               
               {/* Status Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                 <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
                   <div className="flex justify-between items-start mb-4">
                     <h3 className="text-gray-400 text-sm font-medium">Overall Status</h3>
@@ -141,6 +177,24 @@ const HealthcareLogin = () => {
                   </div>
                   <p className="text-3xl font-bold text-blue-400">6/8</p>
                   <p className="text-xs text-gray-500 mt-2">2 documents pending</p>
+                </div>
+
+                {/* Risk Indicator Card - NEW */}
+                <div className={`bg-gray-800 border rounded-lg p-6 ${riskIndicator.color === 'red' ? 'border-red-600' : riskIndicator.color === 'yellow' ? 'border-yellow-600' : 'border-green-600'}`}>
+                  <div className="flex justify-between items-start mb-4">
+                    <h3 className="text-gray-400 text-sm font-medium">Compliance Risk</h3>
+                    {riskIndicator.color === 'red' ? (
+                      <AlertTriangle className="w-5 h-5 text-red-500" />
+                    ) : riskIndicator.color === 'yellow' ? (
+                      <AlertCircle className="w-5 h-5 text-yellow-500" />
+                    ) : (
+                      <CheckCircle className="w-5 h-5 text-green-500" />
+                    )}
+                  </div>
+                  <p className={`text-3xl font-bold ${riskIndicator.color === 'red' ? 'text-red-400' : riskIndicator.color === 'yellow' ? 'text-yellow-400' : 'text-green-400'}`}>
+                    {riskIndicator.icon} {riskIndicator.level}
+                  </p>
+                  <p className="text-xs text-gray-500 mt-2">{riskIndicator.details}</p>
                 </div>
               </div>
 
@@ -254,14 +308,7 @@ const HealthcareLogin = () => {
               <h2 className="text-3xl font-bold mb-8">Document Management System</h2>
               
               <div className="space-y-3">
-                {[
-                  { name: 'BMW Authorization', status: 'Uploaded', date: '01-Jan-2022', expiry: '31-Dec-2024' },
-                  { name: 'Form II', status: 'Pending', date: '-', expiry: 'Due: 30-Dec-2024' },
-                  { name: 'Annual Report', status: 'Uploaded', date: '15-Jan-2024', expiry: '15-Jan-2025' },
-                  { name: 'Vendor Agreement', status: 'Uploaded', date: '10-Feb-2024', expiry: '-' },
-                  { name: 'Compliance Certificate', status: 'Pending', date: '-', expiry: '-' },
-                  { name: 'TNPCB License', status: 'Uploaded', date: '05-Mar-2023', expiry: '05-Mar-2025' }
-                ].map((doc, idx) => (
+                {documents.map((doc, idx) => (
                   <div key={idx} className="bg-gray-800 border border-gray-700 rounded-lg p-4">
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
