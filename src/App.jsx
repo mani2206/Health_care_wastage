@@ -2,7 +2,9 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import HealthcareLogin from './components/HealthcareLogin'
+// import HealthcareLogin from './components/HealthcareLogin'
+// import HealthcareLogin from './components/HealthcareLogin'
+import HealthcareLogin from './components/pageComponets/HealthcareLogin'
 
 function App() {
 
