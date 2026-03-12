@@ -6,24 +6,6 @@ import {
   Reset_BASE_URL,
 } from "../utils/constants";
 
-//   const response = await fetch(`${API_BASE_URL}/login`, {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//       apikey: API_KEY,
-//     },
-//     body: JSON.stringify({ email, password }),
-//   });
-
-//   const data = await response.json();
-
-//   if (!response.ok) {
-//     throw new Error(data.message || "Invalid login credentials.");
-//   }
-
-//   return data;
-// };
-
 export const loginUser = async (email, password) => {
   const response = await fetch(`${API_BASE_URL}/login`, {
     method: "POST",
@@ -43,7 +25,7 @@ export const loginUser = async (email, password) => {
 
   // Save token to localStorage
   localStorage.setItem("token", data.data.token);
-  // localStorage.setItem("userEmail", data.data.email);
+  localStorage.setItem("userEmail", data.data.email);
   localStorage.setItem("userRole", data.data.role);
   localStorage.setItem("userId", data.data.userId);
 
@@ -127,63 +109,37 @@ export const createProfileData = async (formData) => {
   return data;
 };
 
-// export const getProfileData = async () => {
-//   const clinicId = localStorage.getItem("clinicId");
-//   const token = localStorage.getItem("token");
-
-//   if (!clinicId) throw new Error("Clinic ID not found in localStorage");
-//   if (!token) throw new Error("Token not found in localStorage");
-
-//   const response = await fetch(
-//     "https://project01-a7ht.onrender.com/dev/v1/getProfileData",
-//     {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//         apiKey: "mnbvcxzasdfghjkpoiuytrewq1234567890",
-//         Authorization: `Bearer ${token}`, // ✅ Correct Bearer token
-//       },
-//       body: JSON.stringify({ clinicId }), // ✅ Raw JSON body
-//     }
-//   );
-
-//   const data = await response.json();
-
-//   if (!response.ok) {
-//     throw new Error(data.message || "Failed to fetch profile");
-//   }
-
-//   return data;
-// };
-
 export const getProfileData = async () => {
-  const clinicId = localStorage.getItem("clinicId");
   const token = localStorage.getItem("token");
 
-  // 🚫 NEW USER → JUST RETURN null (DON'T THROW ERROR)
-  if (!clinicId) return null;
+  // 🚫 No token → return null
   if (!token) return null;
 
-  const response = await fetch(
-    "https://project01-a7ht.onrender.com/dev/v1/getProfileData",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        apiKey: "mnbvcxzasdfghjkpoiuytrewq1234567890",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ clinicId }),
+  try {
+    const response = await fetch(
+      "https://project01-a7ht.onrender.com/dev/v1/getProfileData",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          apiKey: "mnbvcxzasdfghjkpoiuytrewq1234567890",
+          Authorization: `Bearer ${token}`,
+        },
+        body: null, // ❌ No body required
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to fetch profile");
     }
-  );
 
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || "Failed to fetch profile");
+    return data;
+  } catch (error) {
+    console.error("Profile fetch error:", error);
+    throw error;
   }
-
-  return data;
 };
 
 export const updateProfileData = async (formData) => {
@@ -213,4 +169,36 @@ export const getComplianceFiles = async (userId) => {
   );
 
   return res.json();
+};
+
+export const getDashBoardDocument = async () => {
+  const token = localStorage.getItem("token");
+
+  // 🚫 No token → return null
+  if (!token) return null;
+
+  try {
+    const response = await fetch(
+      "https://project01-a7ht.onrender.com/dev/v1/getDashBoardDocument",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          apiKey: "mnbvcxzasdfghjkpoiuytrewq1234567890",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to fetch dashboard document");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Dashboard fetch error:", error);
+    throw error;
+  }
 };

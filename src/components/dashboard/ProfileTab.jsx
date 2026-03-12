@@ -406,6 +406,7 @@ import { Mail, Phone, MapPin, Building2, User } from "lucide-react";
 const ProfileTab = () => {
   const [profile, setProfile] = useState(null);
   const [file, setFile] = useState(null);
+ 
 
   const [form, setForm] = useState({
     clinicName: "",
@@ -420,17 +421,7 @@ const ProfileTab = () => {
     qualification: "",
   });
 
-  // ✔ Load data only for existing users
-  // useEffect(() => {
-  //   const clinicId = localStorage.getItem("clinicId");
 
-  //   if (clinicId) {
-  //     console.log("Existing user → fetching profile...");
-  //     loadProfile();
-  //   } else {
-  //     console.log("New user → skipping getProfileData()");
-  //   }
-  // }, []);
 
   useEffect(() => {
     const clinicId = localStorage.getItem("clinicId");
@@ -439,34 +430,6 @@ const ProfileTab = () => {
       loadProfile();
     }
   }, []);
-
-  // const loadProfile = async () => {
-  //   try {
-  //     const res = await getProfileData();
-
-  //     if (Array.isArray(res.data) && res.data.length > 0) {
-  //       const clinic = res.data[0];
-  //       const staff = clinic.staff?.[0] || {};
-
-  //       setProfile(clinic);
-
-  //       setForm({
-  //         clinicName: clinic.clinicName || "",
-  //         email: clinic.email || "",
-  //         phone: clinic.phone || "",
-  //         yearEstablished: clinic.yearEstablished || "",
-  //         location: clinic.location || "",
-  //         address: clinic.address || "",
-  //         city: clinic.city || "",
-  //         state: clinic.state || "",
-  //         staffName: staff.name || "",
-  //         qualification: staff.qualification || "",
-  //       });
-  //     }
-  //   } catch (error) {
-  //     toast.error("Failed to load profile");
-  //   }
-  // };
 
 
   const loadProfile = async () => {
@@ -651,6 +614,8 @@ const ProfileTab = () => {
                       className="w-full px-4 py-3 bg-blue-100 border border-blue-200 rounded-lg text-black"
                     />
                   </div>
+
+                 
                 </div>
               </div>
             </div>

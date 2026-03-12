@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { loginUser } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import bg from "../../assets/login_bg.jpeg"
+import headerlogo from "../../assets/logos.jpeg"
 
 const Login = () => {
   const navigate = useNavigate();
@@ -21,34 +22,6 @@ const Login = () => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
-  // const handleLogin = async (e) => {
-  //   e.preventDefault();
-
-  //   if (!validateForm()) return;
-
-  //   setLoading(true);
-  //   try {
-  //     const data = await loginUser(credentials.email, credentials.password);
-
-  //     localStorage.setItem("authToken", data.token);
-  //     localStorage.setItem("userRole", data.role || "admin");
-
-  //     await login(credentials.email, credentials.password);
-
-  //     // Redirect based on role
-  //     if (data.role === "superadmin") {
-  //       navigate("/super-admin-dashboard");
-  //     } else {
-  //       navigate("/dashboard");
-  //     }
-
-  //   } catch (error) {
-  //     toast.error(error.message);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -71,11 +44,27 @@ const Login = () => {
       await login(credentials.email, credentials.password);
 
       // 🔥 Redirect based on EXACT role from LocalStorage
+      // if (role === "superAdmin") {
+      //   navigate("/admin/admindashboard");
+      // } else if (role === "admin") {
+      //   navigate("/dashboard");
+      // } else if (role === "clinic") {
+      //   navigate("/clinicadmin/clinicdashboard");  // ✅ FIXED
+      // }
+      // else {
+      //   navigate("/dashboard");
+      // }
+
       if (role === "superAdmin") {
         navigate("/admin/admindashboard");
       } else if (role === "admin") {
+        // navigate("/dashboard");
+        navigate("/clinicadmin/clinicdashboard");
+      } else if (role === "clinic") {
+        // navigate("/clinicadmin/clinicdashboard");  // ✅ FIXED
         navigate("/dashboard");
-      } else {
+      }
+      else {
         navigate("/dashboard");
       }
 
@@ -110,7 +99,8 @@ const Login = () => {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold flex items-center justify-center gap-3 mb-2 text-black">
-            <Shield className="w-8 h-8" /> Healthcare Compliance
+            {/* <Shield className="w-8 h-8" /> Healthcare Compliance */}
+            <img src={headerlogo} className='w-70' />
           </h1>
           <p className="text-gray-600 font-semibold">Medical Waste Management System</p>
         </div>
@@ -123,15 +113,7 @@ const Login = () => {
               </label>
               <div className="relative">
                 <User className="absolute left-3 top-3.5 w-5 h-5 text-gray-500" />
-                {/* <input
-                  type="email"
-                  value={credentials.email}
-                  onChange={(e) => setCredentials({ ...credentials, email: e.target.value })}
-                  onKeyPress={handleKeyPress}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg text-black focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition ${errors.email ? 'border-red-500' : 'border-gray-300'
-                    }`}
-                  placeholder="Enter email"
-                /> */}
+
                 <input
                   type="email"
                   value={credentials.email}

@@ -14,8 +14,7 @@ const Audit = () => {
 
   const fetchAuditData = async () => {
     try {
-      const token = localStorage.getItem("authToken"); // ✔ get token
-
+      const token = localStorage.getItem("authToken"); 
       const response = await fetch(
         "https://project01-a7ht.onrender.com/dev/v1/getDashBoardDocument",
         {

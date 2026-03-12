@@ -20,7 +20,7 @@
 //       icon: Building2,
 //       color: 'blue'
 //     },
-    
+
 //     {
 //       title: 'Total Documents',
 //       value: '18,294',
@@ -87,7 +87,7 @@
 //                 <div style={{ width: "17%" }} className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-red-500 rounded-r-full transition-all duration-500" />
 //               </div>
 //             </div>
-            
+
 //             <div className="grid grid-cols-3 gap-4 mt-4">
 //               <div className="text-center p-3 bg-green-50 rounded-xl">
 //                 <div className="w-3 h-3 bg-green-500 rounded-full mx-auto mb-2" />
@@ -248,7 +248,8 @@ const SuperAdminDashboard = () => {
   ];
 
   return (
-    <div className="space-y-6 animate-fadeIn">
+    // <div className="space-y-6 animate-fadeIn">
+    <div className="space-y-6 animate-fadeIn min-h-screen pb-20">
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, index) => (
@@ -261,9 +262,8 @@ const SuperAdminDashboard = () => {
                 <stat.icon size={24} className={`text-${stat.color}-600`} />
               </div>
               <span
-                className={`flex items-center gap-1 text-sm ${
-                  stat.trend === "up" ? "text-green-600" : "text-orange-600"
-                }`}
+                className={`flex items-center gap-1 text-sm ${stat.trend === "up" ? "text-green-600" : "text-orange-600"
+                  }`}
               >
                 {stat.trend === "up" ? (
                   <TrendingUp size={16} />
@@ -324,13 +324,12 @@ const SuperAdminDashboard = () => {
                     {new Date(item.expiryDate).toLocaleDateString()}
                   </td>
                   <td
-                    className={`p-2 border font-bold ${
-                      item.status === "Active"
+                    className={`p-2 border font-bold ${item.status === "Active"
                         ? "text-green-600"
                         : item.status === "Expiring Soon"
-                        ? "text-orange-600"
-                        : "text-red-600"
-                    }`}
+                          ? "text-orange-600"
+                          : "text-red-600"
+                      }`}
                   >
                     {item.status}
                   </td>
