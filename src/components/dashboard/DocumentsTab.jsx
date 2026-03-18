@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { CloudUpload, Download, Trash2, Share2, MoreVertical } from 'lucide-react';
 import { toast } from 'react-toastify';
+import { API_BASE_URL } from '../../utils/constants';
 
 
 const DocumentsTab = () => {
@@ -9,19 +10,19 @@ const DocumentsTab = () => {
   console.log(documents, "documents---");
   const [showPopup, setShowPopup] = useState(false);
   const [editDoc, setEditDoc] = useState(null);
- 
-const startUpdate = (doc) => {
-  setEditDoc({
-    documentId: doc.documentId,
-    documentCategory: doc.documentUploaded,
-    expiryDate: doc.expiryDate?.split("T")[0],
-    file: null
-  });
 
-  setShowPopup(true);   // ✅ YOU MISSED THIS
+  const startUpdate = (doc) => {
+    setEditDoc({
+      documentId: doc.documentId,
+      documentCategory: doc.documentUploaded,
+      expiryDate: doc.expiryDate?.split("T")[0],
+      file: null
+    });
 
-  window.scrollTo({ top: 0, behavior: "smooth" });
-};
+    setShowPopup(true);   // ✅ YOU MISSED THIS
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const [formData, setFormData] = useState({
     documentCategory: '',
@@ -102,7 +103,8 @@ const startUpdate = (doc) => {
       uploadFormData.append('proofDocument', formData.file);
 
       const response = await fetch(
-        "https://project01-a7ht.onrender.com/dev/v1/createDocument",
+        // "https://project01-a7ht.onrender.com/dev/v1/createDocument",
+        `${API_BASE_URL}/dev/v1/createDocument`,
         {
           method: "POST",
           headers: {
@@ -156,7 +158,8 @@ const startUpdate = (doc) => {
       const userId = localStorage.getItem("userId");
 
       const response = await fetch(
-        `https://project01-a7ht.onrender.com/dev/v1/getDocument/${userId}`,
+        // `https://project01-a7ht.onrender.com/dev/v1/getDocument/${userId}`,
+        `${API_BASE_URL}/dev/v1/getDocument/${userId}`,
         {
           method: "GET",
           headers: { apiKey: API_KEY },
@@ -198,7 +201,8 @@ const startUpdate = (doc) => {
       }
 
       const response = await fetch(
-        "https://project01-a7ht.onrender.com/dev/v1/updateDocument",
+        // "https://project01-a7ht.onrender.com/dev/v1/updateDocument",
+        `${API_BASE_URL}/dev/v1/updateDocument`,
         {
           method: "PUT",
           headers: {
@@ -423,8 +427,8 @@ const startUpdate = (doc) => {
           </div>
         </div>
 
-      {showPopup && editDoc && (
-          <div className="fixed inset-0 bg-opacity-70 flex justify-center items-center z-50" style={{background:"#ffffffab"}}>
+        {showPopup && editDoc && (
+          <div className="fixed inset-0 bg-opacity-70 flex justify-center items-center z-50" style={{ background: "#ffffffab" }}>
 
             <div className="bg-[#0f0f0f70] text-white w-[90%] md:w-[500px] p-6 rounded-2xl shadow-xl border border-gray-700">
 

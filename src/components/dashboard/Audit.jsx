@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FileText, AlarmClock, AlertTriangle } from "lucide-react";
+import { API_BASE_URL } from "../../utils/constants";
 
 const Audit = () => {
   const [summary, setSummary] = useState({
@@ -14,10 +15,10 @@ const Audit = () => {
 
   const fetchAuditData = async () => {
     try {
-      const token = localStorage.getItem("authToken"); // ✔ get token
-
+      const token = localStorage.getItem("authToken");
       const response = await fetch(
-        "https://project01-a7ht.onrender.com/dev/v1/getDashBoardDocument",
+        // "https://project01-a7ht.onrender.com/dev/v1/getDashBoardDocument",
+        `${API_BASE_URL}/dev/v1/getDashBoardDocument`,
         {
           method: "GET",
           headers: {
@@ -46,7 +47,7 @@ const Audit = () => {
   return (
     <div className="p-10 bg-white h-screen">
       {/* Title */}
-      <h2 className="text-3xl font-semibold text-gray-700">Audit Log</h2>
+      <h2 className="text-4xl font-semibold text-teal-700">Audit Log</h2>
 
       <p className="text-gray-500 text-sm flex items-center mt-1">
         <span className="text-xs mr-1">🔒</span> Secure Auditor Session
@@ -105,10 +106,10 @@ const Audit = () => {
 
             <div
               className={`font-semibold ${row.status === "Active"
-                  ? "text-green-600"
-                  : row.status === "Expiring Soon"
-                    ? "text-orange-600"
-                    : "text-red-600"
+                ? "text-green-600"
+                : row.status === "Expiring Soon"
+                  ? "text-orange-600"
+                  : "text-red-600"
                 }`}
             >
               {row.status}

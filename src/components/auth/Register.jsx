@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { UserPlus, User, Mail, Lock, AlertCircle, UserCog, Eye,EyeOff  } from 'lucide-react';
+import { UserPlus, User, Mail, Lock, AlertCircle, UserCog, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { registerUser } from '../../services/api';
 import bg from "../../assets/login_bg.jpeg"
@@ -60,7 +60,7 @@ const Register = () => {
       backgroundPosition: "center",
       backgroundSize: "cover", // fills entire screen
     }}>
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-fit">
         <div className="bg-white rounded-2xl p-8 shadow-2xl">
           <div className="text-center mb-6">
             <UserPlus className="w-12 h-12 mx-auto mb-3 text-blue-500" />
@@ -69,7 +69,7 @@ const Register = () => {
           </div>
 
           <form onSubmit={handleRegister} className="space-y-4">
-            <div>
+            {/* <div>
               <label className="text-sm font-medium text-black mb-2 block">Select Role</label>
               <div className="grid grid-cols-2 gap-3">
                 <button
@@ -92,6 +92,53 @@ const Register = () => {
                 >
                   <UserCog className="w-4 h-4" /> Super Admin
                 </button>
+              </div>
+            </div> */}
+
+            <div>
+              <label className="text-sm font-medium text-black mb-2 block">Select Role <span className="text-red-600">*</span></label>
+
+              <div className="grid grid-cols-3 gap-3">
+
+                {/* Admin */}
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, userType: "clinic" })}
+                  className={`py-3 px-4 rounded-lg font-medium transition flex items-center justify-center gap-2 
+        ${formData.userType === "clinic"
+                      ? "bg-blue-600 text-white shadow-lg"
+                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    }`}
+                >
+                  <User className="w-4 h-4" /> Clinic
+                </button>
+
+                {/* Super Admin */}
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, userType: "superAdmin" })}
+                  className={`py-3 px-4 rounded-lg font-medium transition flex items-center justify-center gap-2 
+        ${formData.userType === "superAdmin"
+                      ? "bg-purple-600 text-white shadow-lg"
+                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    }`}
+                >
+                  <UserCog className="w-4 h-4" /> Super Admin
+                </button>
+
+                {/* Clinic Admin */}
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, userType: "admin" })}
+                  className={`py-3 px-4 rounded-lg font-medium transition flex items-center justify-center gap-2 
+        ${formData.userType === "admin"
+                      ? "bg-green-600 text-white shadow-lg"
+                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    }`}
+                >
+                  <UserPlus className="w-4 h-4" /> Clinic Admin
+                </button>
+
               </div>
             </div>
 

@@ -16,7 +16,8 @@ const Header = () => {
               <Shield className="w-6 h-6" /> Healthcare Compliance System
             </h1>
             <p className="text-sm text-gray-300">
-              Welcome, {user?.role === 'superadmin' ? 'Super Admin' : 'Clinic Admin'}
+              {/* Welcome, {user?.role === 'superadmin' ? 'Super Admin' : 'Clinic Admin'} */}
+              Welcome Clinic
             </p>
           </div>
           <button 

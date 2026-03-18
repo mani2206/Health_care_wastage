@@ -1,8 +1,6 @@
 export const API_KEY = "mnbvcxzasdfghjkpoiuytrewq1234567890";
-export const Forgot_BASE_URL = "https://project01-a7ht.onrender.com/dev/v1";
-export const Reset_BASE_URL = "https://project01-a7ht.onrender.com/dev/v1"
 export const REGISTER_API_KEY = "mnbvcxzasdfghjkpoiuytrewq1234567890";
-export const API_BASE_URL = "https://project01-a7ht.onrender.com/dev/v1";
+export const API_BASE_URL = "https://project01-a7ht.onrender.com";
 
 export const CLINICS = [
   {

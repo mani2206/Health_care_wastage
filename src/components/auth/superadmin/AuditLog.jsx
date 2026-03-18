@@ -78,7 +78,7 @@ const AuditLog = () => {
     <div className="space-y-6 animate-fadeIn">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold text-slate-800">Audit Log</h2>
+        <h2 className="text-4xl font-bold text-teal-700">Audit Log</h2>
         <p className="text-sm text-slate-500 mt-1">Complete audit trail of all system activities and events</p>
       </div>
 

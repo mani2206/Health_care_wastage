@@ -8,6 +8,7 @@ const Navigation = () => {
         // { path: '/bmw', icon: <FileText className="w-4 h-4" />, label: 'BMW Authorization' },
         { path: '/documents', icon: <FileText className="w-4 h-4" />, label: 'Documents' },
         // { path: '/notifications', icon: <Bell className="w-4 h-4" />, label: 'Notifications' },
+        { path: '/wastelog', icon: <User className="w-4 h-4" />, label: 'WasteLog' },
         { path: '/audit', icon: <History className="w-4 h-4" />, label: 'Audit' },
         { path: '/profile', icon: <User className="w-4 h-4" />, label: 'Profile' }
     ];
