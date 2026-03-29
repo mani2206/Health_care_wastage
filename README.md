@@ -133,15 +133,6 @@ vite.config.js
 package.json
 ```
 
----
-
-# 🛠️ Build for Production
-
-```bash
-npm run build
-```
-
----
 
 # 🎉 Completed!
 
@@ -153,9 +144,6 @@ Your **Compicare Medical Waste Compliance System** is now structured with:
 * Compliance document expiry alerts
 * React + Vite performance setup
 
-If you want, I can also add:
-✅ API Documentation
-✅ Architecture Diagram
-✅ UI Screenshots Section
+
 
 Just tell me! 🎯
