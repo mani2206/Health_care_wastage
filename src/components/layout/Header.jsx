@@ -13,7 +13,7 @@ const Header = () => {
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold flex items-center gap-2">
-              <Shield className="w-6 h-6" /> Healthcare Compliance System
+              <Shield className="w-6 h-6" /> Healthcare Compliance Systems
             </h1>
             <p className="text-sm text-gray-300">
               {/* Welcome, {user?.role === 'superadmin' ? 'Super Admin' : 'Clinic Admin'} */}
