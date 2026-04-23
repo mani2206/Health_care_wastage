@@ -44,7 +44,7 @@ const DashboardTab = () => {
 
   return (
     <div className="p-6 md:p-10 bg-white">
-      <h2 className="text-3xl font-bold text-teal-700">Compliance Dashboard</h2>
+      <h2 className="text-3xl font-bold text-teal-700">Compliance Dashboards</h2>
       <p className="text-gray-500 mb-10">
         Manage Regulatory Documents And Track Upcoming Deadlines.
       </p>
